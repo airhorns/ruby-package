@@ -1,12 +1,12 @@
 require 'test_helper'
 
-package :fruit do
+class << package(:fruit)
   class Apple; end
   class Pear; end
   class Peach; end
 end
 
-package :pie do
+class << package(:pie)
   class Pie
     def initialize(fruit)
       @fruit = fruit
@@ -18,15 +18,13 @@ package :pie do
   end
 end
 
-package :bakery do
-  import :fruit, :pie
-  Foobar
+class << package(:bakery, [:fruit, :pie])
   MENU = [Pie.new(Apple.new)]
   SERVE = proc { MENU[0] }
   SERVE_CUSTOM = proc { Pie.new(Pear.new) }
 end
 
-package :bakery do
+class << package(:bakery)
   MENU << Pie.new(Peach.new)
 end
 
@@ -40,7 +38,7 @@ class TestExample < Minitest::Test
   end
 end
 
-package :bakery do
+class << package(:bakery)
   class TestBakery < Minitest::Test
     def test_inner_classes_can_access_constants
       assert MENU
