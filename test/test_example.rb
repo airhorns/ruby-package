@@ -24,7 +24,7 @@ class << package(:bakery, import: [:fruit, :pie])
   SERVE_CUSTOM = proc { Pie.new(Pear.new) }
 end
 
-class << package(:bakery)
+class << package(:bakery, import: [:fruit, :pie])
   MENU << Pie.new(Peach.new)
 end
 
@@ -51,6 +51,11 @@ class << package(:bakery)
 
     def test_packages_can_be_reopened
       assert_equal 2, MENU.size
+    end
+
+    def test_previously_imported_package_contstants_arent_accessible_if_not_reimported
+      assert_raises(NameError) { Pie }
+      assert_raises(NameError) { Apple }
     end
   end
 end
