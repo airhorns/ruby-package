@@ -27,7 +27,7 @@ module RubyPackage
     end
 
     def package(name)
-      @packages[name]
+      @packages[name.to_sym]
     end
   end
 
@@ -39,7 +39,6 @@ module RubyPackage
       klass.instance_exec { @imports = imports }
 
       def klass.const_missing(name)
-        puts "module const missing called for #{name}"
         @imports.each do |import|
           if import.singleton_class.const_defined?(name)
             return import.singleton_class.const_get(name)
@@ -53,16 +52,16 @@ module RubyPackage
   class Package
     attr_accessor :name, :definition_context
 
-    def self.define(name, import_names = [], registry = DEFAULT_REGISTRY)
-      package = registry.package(name) || new(name, import_names, registry)
+    def self.define(name, import: [], registry: DEFAULT_REGISTRY)
+      package = registry.package(name) || new(name, import: import, registry: registry)
       package.definition_context
     end
 
-    def initialize(name, import_names, registry)
-      @name = name
+    def initialize(name, import: [], registry: DEFAULT_REGISTRY)
+      @name = name.to_sym
       @registry = registry
       registry.register(self)
-      available_contexts = import_names.map { |import| @registry.package(import).definition_context }
+      available_contexts = import.map { |import_name| @registry.package(import_name).definition_context }
       @definition_context = PackageDefinitionContext.new(available_contexts)
     end
   end

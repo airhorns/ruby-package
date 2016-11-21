@@ -18,7 +18,7 @@ class << package(:pie)
   end
 end
 
-class << package(:bakery, [:fruit, :pie])
+class << package(:bakery, import: [:fruit, :pie])
   MENU = [Pie.new(Apple.new)]
   SERVE = proc { MENU[0] }
   SERVE_CUSTOM = proc { Pie.new(Pear.new) }
@@ -46,6 +46,14 @@ class << package(:bakery)
 
     def test_packages_can_be_reopened
       assert_equal 2, MENU.size
+    end
+  end
+end
+
+class << package(:application, import: [:bakery])
+  class TestApplication < Minitest::Test
+    def test_imports_dependencies_arent_accessible
+      assert_raises(NameError) { Pie }
     end
   end
 end

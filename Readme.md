@@ -43,8 +43,7 @@ class << package(:pie)
   end
 end
 
-class << package(:bakery)
-  import :fruit, :pie
+class << package(:bakery, import: %w(fruit pie))
   MENU = [Pie.new(Apple.new), Pie.new(Pear.new)]
 end
 ```
