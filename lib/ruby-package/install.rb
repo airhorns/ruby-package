@@ -1,6 +1,6 @@
 require 'ruby-package'
 
-instance_eval do
+module Kernel
   def package(*args, &block)
     RubyPackage::Package.define(*args, &block)
   end
