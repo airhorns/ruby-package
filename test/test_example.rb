@@ -36,11 +36,16 @@ class TestExample < Minitest::Test
     assert_raises(NameError) { Peach }
     assert_raises(NameError) { Pie }
   end
+
+  def test_package_callbacks_can_be_executed_outside
+    assert package(:bakery).singleton_class::SERVE.call.class.name.end_with?("Pie")
+    assert package(:bakery).singleton_class::SERVE_CUSTOM.call.class.name.end_with?("Pie")
+  end
 end
 
 class << package(:bakery)
   class TestBakery < Minitest::Test
-    def test_inner_classes_can_access_constants
+    def test_inner_classes_can_access_package_constants
       assert MENU
     end
 
